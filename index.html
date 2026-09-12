@@ -7,16 +7,16 @@
   <style>
     :root { --ink: #20262f; --muted: #6f7883; --paper: #f6f4ef; --white: #fffefa; --line: #e5e1d8; --red: #e85e55; --yellow: #e8ad3f; --green: #64a477; --blue: #506b94; }
     * { box-sizing: border-box; }
-    body { margin: 0; color: var(--ink); background: radial-gradient(circle at 92% 8%, #dfeae5 0, transparent 32%), var(--paper); font-family: 'Trebuchet MS', sans-serif; }
+    body { margin: 0; color: var(--ink); background: var(--paper); font-family: 'Trebuchet MS', sans-serif; }
     header { display: flex; justify-content: space-between; align-items: center; max-width: 1120px; margin: auto; padding: 30px 28px 15px; }
     .brand { display: flex; align-items: center; gap: 10px; font: 800 24px Georgia, serif; }
     .mark { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 8px; color: var(--white); background: var(--blue); font: 700 17px sans-serif; }
     .privacy { color: var(--muted); font-size: 12px; }
     main { max-width: 1120px; margin: auto; padding: 55px 28px 80px; }
-    .hero { max-width: 690px; }
-    .eyebrow { color: var(--blue); font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
-    h1 { margin: 12px 0 16px; font: 500 clamp(48px, 8vw, 86px)/.9 Georgia, serif; letter-spacing: -3px; }
-    .intro { max-width: 570px; margin: 0; color: var(--muted); font-size: 17px; line-height: 1.55; }
+    .hero { max-width: 760px; }
+    .eyebrow { color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; }
+    h1 { margin: 12px 0 16px; font: 500 clamp(42px, 7vw, 68px)/.94 Georgia, serif; letter-spacing: -2px; }
+    .intro { max-width: 570px; margin: 0; color: var(--muted); font-size: 16px; line-height: 1.5; }
     .composer { max-width: 760px; margin-top: 32px; }
     textarea { display: block; width: 100%; min-height: 145px; padding: 18px; resize: vertical; border: 1px solid var(--line); border-radius: 8px; outline: 0; color: var(--ink); background: var(--white); box-shadow: 0 8px 24px rgb(32 38 47 / 6%); font: 16px/1.5 sans-serif; }
     textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 4px #dfe7f1; }
@@ -33,6 +33,9 @@
     .column.important { border-top-color: var(--red); }
     .column.week { border-top-color: var(--yellow); }
     .column h2 { display: flex; align-items: center; gap: 8px; margin: 0 0 15px; font: 700 18px Georgia, serif; }
+    .priority-dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+    .important .priority-dot { background: var(--red); }
+    .week .priority-dot { background: var(--yellow); }
     .column h2 span { color: var(--muted); font: 11px sans-serif; }
     .task-list { display: grid; gap: 9px; }
     .task { display: grid; grid-template-columns: 22px 1fr auto; gap: 9px; align-items: start; padding: 13px; border: 1px solid var(--line); border-radius: 5px; background: var(--white); box-shadow: 2px 3px 0 rgb(32 38 47 / 4%); }
@@ -42,11 +45,13 @@
     .task.done .check { border-color: var(--green); background: var(--green); }
     .task-text { min-width: 0; font: 14px/1.4 Georgia, serif; }
     .task-meta { margin-top: 5px; color: var(--muted); font: 10px sans-serif; }
+    .task-date { color: var(--blue); font-weight: 700; }
     .move { padding: 4px 6px; color: var(--muted); background: transparent; font-size: 11px; }
     .move:hover { color: var(--blue); }
     .delete { padding: 4px 6px; color: #b44d49; background: transparent; font-size: 11px; }
     .delete:hover { color: #8e2925; }
-    .why { grid-column: 2 / 4; padding: 0; color: var(--muted); background: transparent; text-align: left; font: 11px/1.4 sans-serif; }
+    .task-actions { display: flex; align-items: center; gap: 3px; }
+    .why { grid-column: 2 / 4; justify-self: start; margin-top: 5px; padding: 5px 0; color: var(--blue); background: transparent; text-align: left; font: 700 11px/1.4 sans-serif; }
     .why:hover { color: var(--blue); }
     .reason { grid-column: 2 / 4; margin-top: -3px; color: var(--muted); font: 11px/1.4 sans-serif; }
     .empty { padding: 18px 4px; color: var(--muted); font-size: 12px; }
@@ -54,46 +59,51 @@
   </style>
 </head>
 <body>
-  <header><div class="brand"><span class="mark">↯</span>Unjumble</div><div class="privacy">Your brain dump stays in this browser</div></header>
+  <header><div class="brand"><span class="mark">✓</span>Unjumble</div><div class="privacy">Saved on this device</div></header>
   <main>
     <section class="hero">
-      <div class="eyebrow">Make room in your head</div>
-      <h1>Put it all<br>down.</h1>
-      <p class="intro">Write everything stressing you out. Unjumble will turn the swirl into a small, doable list.</p>
+      <div class="eyebrow">Task list</div>
+      <h1>What’s on your mind?</h1>
+      <p class="intro">Write it down. We’ll sort it into a clear list.</p>
       <form class="composer" id="composer">
-        <textarea id="dump" aria-label="Brain dump" placeholder="I have a math test Friday, my room is messy, I need to email my teacher..."></textarea>
-        <div class="composer-footer"><span class="hint">Separate thoughts with commas, “and”, or new lines.</span><label class="due-input">Optional time <select class="time-select" id="due-hour" aria-label="Hour"><option value="">Hour</option></select><span>:</span><select class="time-select" id="due-minute" aria-label="Minute"><option value="">Min</option></select><select class="time-select" id="due-period" aria-label="AM or PM"><option value="">AM/PM</option><option>AM</option><option>PM</option></select></label><button class="sort-button" type="submit">Unjumble this</button></div>
+        <textarea id="dump" aria-label="Task entry" placeholder="Type anything..."></textarea>
+        <div class="composer-footer"><span class="hint">Use a new line for each thought.</span><label class="due-input">Optional time <select class="time-select" id="due-hour" aria-label="Hour"><option value="">Hour</option></select><span>:</span><select class="time-select" id="due-minute" aria-label="Minute"><option value="">Min</option></select><select class="time-select" id="due-period" aria-label="AM or PM"><option value="">AM/PM</option><option>AM</option><option>PM</option></select></label><button class="sort-button" type="submit">Organize</button></div>
         <div class="composer-message" id="composer-message" aria-live="polite"></div>
       </form>
     </section>
     <section class="board" aria-live="polite">
-      <div class="column important"><h2><span>🔴</span>Important <span id="important-count">0</span></h2><div class="task-list" id="important"></div></div>
-      <div class="column week"><h2><span>🟡</span>This week <span id="week-count">0</span></h2><div class="task-list" id="week"></div></div>
-      <div class="column later"><h2><span>🟢</span>Later <span id="later-count">0</span></h2><div class="task-list" id="later"></div></div>
+      <div class="column important"><h2><span class="priority-dot"></span>Important <span id="important-count">0</span></h2><div class="task-list" id="important"></div></div>
+      <div class="column week"><h2><span class="priority-dot"></span>This week <span id="week-count">0</span></h2><div class="task-list" id="week"></div></div>
+      <div class="column later"><h2><span class="priority-dot"></span>Later <span id="later-count">0</span></h2><div class="task-list" id="later"></div></div>
     </section>
   </main>
   <script>
     const savedTasks = JSON.parse(localStorage.getItem('unjumble-tasks') || 'null');
     const tasks = savedTasks && savedTasks.important && savedTasks.week && savedTasks.later ? savedTasks : { important: [], week: [], later: [] };
-    const urgencyWords = /due\s+(today|tonight|tomorrow)|by\s+(today|tonight|tomorrow)|before\s+[^,.]*tomorrow|in\s+\d+\s+hours?|urgent|asap|really\s+need|exam\s+(today|tomorrow)|test\s+(today|tomorrow)|application\s+(closes|due)|closes?\s+(tonight|today)|doctor\s+appointment|meeting\s+at|deadline|must\s+do|before\s+i\s+can/i;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const urgencyWords = /due\s+(today|tonight|tomorrow)|by\s+(today|tonight|tomorrow)|before\s+[^,.]*tomorrow|in\s+[12]\s+days?|in\s+\d+\s+hours?|urgent|asap|really\s+need|exam\s+(today|tomorrow)|test\s+(today|tomorrow)|application\s+(closes|due)|closes?\s+(tonight|today)|doctor\s+appointment|meeting\s+at|deadline|must\s+do|before\s+i\s+can/i;
     const weekWords = /by\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)|this week|before the weekend|next week|next month|soon|prepare for|start studying|before\s+[^,.]*(hackathon|exam|test)|email|call|practice|study|buy|book/i;
     const taskVerbs = /^(?:i\s+)?(?:need to|have to|should|must|remember to|want to|forgot to)\s+/i;
     const typoFixes = { studdy: 'study', tomorow: 'tomorrow', tommorrow: 'tomorrow', emial: 'email', teh: 'the', prject: 'project', practce: 'practice', assigment: 'assignment', mathh: 'math', befor: 'before', tset: 'test' };
     function repairTypos(value) { return value.replace(/[A-Za-z]+/g, word => typoFixes[word.toLowerCase()] || word); }
     function cleanTask(value) { return repairTypos(value).trim().replace(/^[,.;:\-\s]+|[,.;:\-\s]+$/g, '').replace(taskVerbs, '').replace(/^i\s+(?:have|need)\s+/i, '').replace(/\s+/g, ' '); }
     function looksUnderstandable(value) { const words = value.trim().split(/\s+/).filter(Boolean); return words.length >= 2 && /[aeiou]/i.test(value) && /[a-z]{3}/i.test(value); }
-    function categoryFor(task) { if (urgencyWords.test(task)) return { category: 'important', reason: 'Immediate deadline, urgency, consequence, or time-sensitive event.' }; if (weekWords.test(task)) return { category: 'week', reason: 'A near-term deadline or preparation is mentioned.' }; return { category: 'later', reason: 'No immediate deadline or urgency was detected.' }; }
+    function dateKey(date) { return date.toISOString().slice(0, 10); }
+    function nextWeekday(name) { const days = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']; const target = days.indexOf(name.toLowerCase()); const result = new Date(today); let delta = (target - today.getDay() + 7) % 7; if (delta === 0) delta = 7; result.setDate(result.getDate() + delta); return result; }
+    function exactDateFor(text) { const lower = text.toLowerCase(); let result = new Date(today); if (/today|tonight/.test(lower)) return dateKey(result); if (/tomorrow/.test(lower)) { result.setDate(result.getDate() + 1); return dateKey(result); } const inDays = lower.match(/in\s+(\d+)\s+days?/); if (inDays) { result.setDate(result.getDate() + Number(inDays[1])); return dateKey(result); } const weekday = lower.match(/\b(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b/); if (weekday) return dateKey(nextWeekday(weekday[1])); const fullDate = lower.match(/\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2})(?:,?\s+(\d{4}))?/); if (fullDate) { const year = fullDate[3] ? Number(fullDate[3]) : today.getFullYear(); const parsed = new Date(`${fullDate[1]} ${fullDate[2]}, ${year}`); if (parsed < today && !fullDate[3]) parsed.setFullYear(year + 1); return Number.isNaN(parsed.valueOf()) ? null : dateKey(parsed); } const slashDate = lower.match(/\b(\d{1,2})\/(\d{1,2})\/(\d{4})\b/); if (slashDate) { const parsed = new Date(Number(slashDate[3]), Number(slashDate[1]) - 1, Number(slashDate[2])); return Number.isNaN(parsed.valueOf()) ? null : dateKey(parsed); } return null; }
+    function displayDate(date) { if (!date) return ''; const parsed = new Date(`${date}T00:00:00`); return ` · ${parsed.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}`; }
+    function categoryFor(task) { const date = exactDateFor(task); const daysAway = date ? Math.round((new Date(`${date}T00:00:00`) - today) / 86400000) : null; if (urgencyWords.test(task) || daysAway !== null && daysAway <= 2) return { category: 'important', reason: `Immediate deadline or urgency${date ? ` (${date})` : ''}.`, date }; if (weekWords.test(task) || daysAway !== null && daysAway <= 7) return { category: 'week', reason: `Near-term deadline or preparation${date ? ` (${date})` : ''}.`, date }; return { category: 'later', reason: date ? `Future goal or deadline (${date}).` : 'No immediate deadline or urgency was detected.', date }; }
     function splitDump(value) { return value.replace(/[.!?]+/g, ',').replace(/\s+and\s+/gi, ',').split(/[\n,]+/).map(cleanTask).filter(task => task.length > 2); }
     function breakDown(task) { if (/science project|project.*due/i.test(task) && /research|presentation|practice|haven't started|not started/i.test(task)) return [{ text: 'Start science project', forced: 'important', reason: 'The project is due and has not started.' }, { text: 'Research topic', forced: 'important', reason: 'Research is a dependency for the project.' }, { text: 'Make presentation', forced: 'week', reason: 'This is a project step to complete before the deadline.' }, { text: 'Practice presentation', forced: 'week', reason: 'Practice is a project step to complete before presenting.' }]; return [{ text: task }]; }
     for (let hour = 1; hour <= 12; hour += 1) document.querySelector('#due-hour').insertAdjacentHTML('beforeend', `<option value="${hour}">${hour}</option>`);
     for (let minute = 1; minute <= 60; minute += 1) document.querySelector('#due-minute').insertAdjacentHTML('beforeend', `<option value="${minute}">${String(minute).padStart(2, '0')}</option>`);
     function saveTasks() { localStorage.setItem('unjumble-tasks', JSON.stringify(tasks)); }
-    function addTask(text, due, forcedCategory, suppliedReason) { const classification = categoryFor(text); const category = forcedCategory || classification.category; tasks[category].push({ text, due, reason: suppliedReason || classification.reason, done: false, id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}` }); }
+    function addTask(text, due, forcedCategory, suppliedReason) { const classification = categoryFor(text); const category = forcedCategory || classification.category; tasks[category].push({ text, due, date: classification.date, reason: suppliedReason || classification.reason, done: false, id: crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}` }); }
     function formatDue(due) { return due ? ` · ${due.hour}:${String(due.minute).padStart(2, '0')} ${due.period}` : ''; }
     function render() {
       Object.entries(tasks).forEach(([category, items]) => {
         const list = document.querySelector(`#${category}`);
-          list.innerHTML = items.length ? items.map(task => `<article class="task${task.done ? ' done' : ''}" data-id="${task.id}"><button class="check" aria-label="Mark task complete">${task.done ? '✓' : ''}</button><div><div class="task-text">${escapeHtml(task.text)}</div><div class="task-meta">${task.done ? 'Done' : category === 'important' ? 'Needs attention' : category === 'week' ? 'On your radar' : 'No rush'}${formatDue(task.due)}</div></div><button class="move" aria-label="Move task">Move</button><button class="delete" aria-label="Delete task">Delete</button><button class="why" aria-expanded="false">Why?</button><div class="reason" hidden>${escapeHtml(task.reason || 'Sorted from the context in your brain dump.')}</div></article>`).join('') : '<div class="empty">Nothing here yet.</div>';
+          list.innerHTML = items.length ? items.map(task => `<article class="task${task.done ? ' done' : ''}" data-id="${task.id}"><button class="check" aria-label="Mark task complete">${task.done ? '✓' : ''}</button><div><div class="task-text">${escapeHtml(task.text)}</div><div class="task-meta">${task.done ? 'Done' : category === 'important' ? 'Needs attention' : category === 'week' ? 'On your radar' : 'No rush'}<span class="task-date">${displayDate(task.date)}</span>${formatDue(task.due)}</div></div><div class="task-actions"><button class="move" aria-label="Move task">Move</button><button class="delete" aria-label="Delete task">Delete</button></div><button class="why" aria-expanded="false">Why this priority?</button><div class="reason" hidden>${escapeHtml(task.reason || 'Sorted from the context in your brain dump.')}</div></article>`).join('') : '<div class="empty">Nothing here yet.</div>';
         document.querySelector(`#${category}-count`).textContent = items.length;
       });
       document.querySelectorAll('.check').forEach(button => button.addEventListener('click', event => { const task = findTask(event.currentTarget.closest('.task').dataset.id); task.done = !task.done; saveTasks(); render(); }));
@@ -102,10 +112,20 @@
       document.querySelectorAll('.why').forEach(button => button.addEventListener('click', event => { const reason = event.currentTarget.nextElementSibling; reason.hidden = !reason.hidden; event.currentTarget.setAttribute('aria-expanded', String(!reason.hidden)); }));
     }
     function findTask(id) { return Object.values(tasks).flat().find(task => task.id === id); }
+    function mostRecentTask() { return Object.values(tasks).flat().slice(-1)[0]; }
+    function applyConversationUpdate(value) {
+      const lower = value.toLowerCase();
+      const task = mostRecentTask();
+      if (!task) return false;
+      if (/already\s+finished|finished\s+that|already\s+done|done\s+with\s+that/.test(lower)) { task.done = true; task.action = 'COMPLETE'; return true; }
+      if (/really\s+important|make\s+that\s+important/.test(lower)) { const current = Object.keys(tasks).find(category => tasks[category].includes(task)); tasks[current] = tasks[current].filter(item => item !== task); tasks.important.push(task); task.reason = 'Updated because the user marked it as important.'; task.action = 'UPDATE'; return true; }
+      if (/actually|change|update/.test(lower) && /due|deadline|friday|monday|tuesday|wednesday|thursday|saturday|sunday|today|tomorrow/.test(lower)) { const date = exactDateFor(value); if (!date) return false; const current = Object.keys(tasks).find(category => tasks[category].includes(task)); const classification = categoryFor(`${task.text} ${value}`); tasks[current] = tasks[current].filter(item => item !== task); task.date = date; task.reason = `Updated deadline to ${date}.`; task.action = 'UPDATE'; tasks[classification.category].push(task); return true; }
+      return false;
+    }
     function moveTask(id) { const task = findTask(id); const current = Object.keys(tasks).find(category => tasks[category].includes(task)); const next = current === 'important' ? 'week' : current === 'week' ? 'later' : 'important'; tasks[current] = tasks[current].filter(item => item !== task); tasks[next].push(task); saveTasks(); render(); }
     function deleteTask(id) { Object.keys(tasks).forEach(category => { tasks[category] = tasks[category].filter(task => task.id !== id); }); saveTasks(); render(); }
     function escapeHtml(value) { return String(value).replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character])); }
-    document.querySelector('#composer').addEventListener('submit', event => { event.preventDefault(); const dump = document.querySelector('#dump'); const message = document.querySelector('#composer-message'); if (!looksUnderstandable(dump.value)) { message.textContent = 'Try writing an action, like “email my teacher” or “study for math.” I could not find a clear task in that text.'; dump.focus(); return; } const hour = document.querySelector('#due-hour').value; const minute = document.querySelector('#due-minute').value; const period = document.querySelector('#due-period').value; const due = hour && minute && period ? { hour, minute, period } : null; const repairedText = repairTypos(dump.value); const parsedTasks = /science project|presentation.*practice/i.test(repairedText) ? breakDown(repairedText) : splitDump(repairedText).flatMap(breakDown); parsedTasks.forEach(task => addTask(task.text, due, task.forced, task.reason)); message.textContent = repairedText !== dump.value ? 'I cleaned up a few likely typos and sorted your tasks.' : 'Tasks added and sorted.'; dump.value = ''; document.querySelector('#due-hour').value = ''; document.querySelector('#due-minute').value = ''; document.querySelector('#due-period').value = ''; saveTasks(); render(); dump.focus(); });
+    document.querySelector('#composer').addEventListener('submit', event => { event.preventDefault(); const dump = document.querySelector('#dump'); const message = document.querySelector('#composer-message'); if (!looksUnderstandable(dump.value)) { message.textContent = 'Try writing an action, like “email my teacher” or “study for math.” I could not find a clear task in that text.'; dump.focus(); return; } if (applyConversationUpdate(dump.value)) { message.textContent = 'Updated the existing task.'; dump.value = ''; saveTasks(); render(); dump.focus(); return; } const hour = document.querySelector('#due-hour').value; const minute = document.querySelector('#due-minute').value; const period = document.querySelector('#due-period').value; const due = hour && minute && period ? { hour, minute, period } : null; const repairedText = repairTypos(dump.value); const parsedTasks = /science project|presentation.*practice/i.test(repairedText) ? breakDown(repairedText) : splitDump(repairedText).flatMap(breakDown); parsedTasks.forEach(task => addTask(task.text, due, task.forced, task.reason)); message.textContent = repairedText !== dump.value ? 'I cleaned up a few likely typos and sorted your tasks.' : 'Tasks added and sorted.'; dump.value = ''; document.querySelector('#due-hour').value = ''; document.querySelector('#due-minute').value = ''; document.querySelector('#due-period').value = ''; saveTasks(); render(); dump.focus(); });
     render();
   </script>
 </body>
